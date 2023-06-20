@@ -1,32 +1,30 @@
-import React, { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Modal, Overlay } from './Modal.styled';
 import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class ModalImage extends Component {
-  static propTypes = {
-    closeModal: PropTypes.func.isRequired,
-  };
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+export default function ModalImage({ closeModal, children }) {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = e => {
-    this.props.closeModal(e);
+  const handleKeyDown = e => {
+    closeModal(e);
   };
 
-  render() {
-    return createPortal(
-      <Overlay onClick={this.props.closeModal}>
-        <Modal>{this.props.children}</Modal>
-      </Overlay>,
-      modalRoot
-    );
-  }
+  return createPortal(
+    <Overlay onClick={closeModal}>
+      <Modal>{children}</Modal>
+    </Overlay>,
+    modalRoot
+  );
 }
+
+ModalImage.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+};

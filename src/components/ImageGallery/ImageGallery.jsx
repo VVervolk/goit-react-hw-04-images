@@ -17,10 +17,8 @@ export default function ImageGallery({ request }) {
 
   useEffect(() => {
     if (!request) {
-      console.log(Boolean(request));
       return;
     }
-
     setPage(1);
     setLoading(true);
     getImages(request)
